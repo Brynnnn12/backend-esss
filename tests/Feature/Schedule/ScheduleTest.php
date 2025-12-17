@@ -239,3 +239,42 @@ test('Employee dapat melihat jadwal pribadi', function () {
     $response->assertStatus(200);
     $response->assertJsonCount(1, 'data');
 });
+
+test('Hr dapat melihat assignments per schedule', function () {
+    //Arrange
+    \App\Models\User::factory()->create()->assignRole('Hr');
+    $schedule = \App\Models\Schedule::factory()->create();
+    $user1 = \App\Models\User::factory()->create();
+    $user2 = \App\Models\User::factory()->create();
+    $shift = \App\Models\Shift::factory()->create();
+
+    \App\Models\ScheduleAssignment::create([
+        'schedule_id' => $schedule->id,
+        'user_id' => $user1->id,
+        'shift_id' => $shift->id,
+    ]);
+    \App\Models\ScheduleAssignment::create([
+        'schedule_id' => $schedule->id,
+        'user_id' => $user2->id,
+        'shift_id' => $shift->id,
+    ]);
+
+    //Act
+    $response = $this->actingAs(\App\Models\User::first())->getJson("/api/v1/schedules/{$schedule->id}/assignments");
+
+    //Assert
+    $response->assertStatus(200);
+    $response->assertJsonCount(2, 'data');
+});
+
+test('Employee tidak dapat melihat assignments per schedule', function () {
+    //Arrange
+    \App\Models\User::factory()->create()->assignRole('Employee');
+    $schedule = \App\Models\Schedule::factory()->create();
+
+    //Act
+    $response = $this->actingAs(\App\Models\User::first())->getJson("/api/v1/schedules/{$schedule->id}/assignments");
+
+    //Assert
+    $response->assertStatus(403);
+});

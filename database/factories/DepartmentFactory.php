@@ -22,7 +22,7 @@ class DepartmentFactory extends Factory
         return [
             'id' => Str::uuid(),
             //buat nama department yang realistis seperti it, hr, finance, marketing, dll
-            'name' => $this->faker->unique()->randomElement(['IT', 'HR', 'Finance', 'Marketing', 'Sales', 'Operations', 'Customer Service', 'R&D', 'Legal', 'Administration']),
+            'name' => $this->faker->randomElement(['IT', 'HR', 'Finance', 'Marketing', 'Sales', 'Operations', 'Customer Service', 'R&D', 'Legal', 'Administration']),
         ];
     }
 }

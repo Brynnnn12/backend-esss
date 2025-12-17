@@ -18,7 +18,7 @@ class ScheduleFactory extends Factory
     {
         return [
             'id' => \Illuminate\Support\Str::uuid(),
-            'department_id' => \App\Models\Department::factory(),
+            'department_id' => \App\Models\Department::inRandomOrder()->first()?->id ?? \App\Models\Department::factory(),
             'date' => $this->faker->date(),
         ];
     }

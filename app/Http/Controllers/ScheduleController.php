@@ -98,4 +98,13 @@ class ScheduleController extends Controller
         $assignments = $this->assignmentService->getAssignmentsByUser(Auth::id());
         return $this->successResponse(ScheduleAssignmentResource::collection($assignments), 'My schedule retrieved successfully', 200);
     }
+    /**
+     * Get assignments for a specific schedule (HR only).
+     */
+    public function assignments(Schedule $schedule)
+    {
+        $this->authorize('view', $schedule); // HR bisa view schedule
+        $assignments = $this->assignmentService->getAssignmentsBySchedule($schedule->id);
+        return $this->successResponse(ScheduleAssignmentResource::collection($assignments), 'Schedule assignments retrieved successfully', 200);
+    }
 }

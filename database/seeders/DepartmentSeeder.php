@@ -12,6 +12,10 @@ class DepartmentSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\Department::factory()->count(5)->create();
+        $departments = ['IT', 'HR', 'Finance', 'Marketing', 'Sales'];
+
+        foreach ($departments as $name) {
+            \App\Models\Department::factory()->create(['name' => $name]);
+        }
     }
 }

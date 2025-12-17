@@ -249,7 +249,7 @@ Table schedule_assignments {
 
     ```bash
     php artisan migrate
-    php artisan db:seed  # Buat dummy data HR, Employee, Departments, Shifts
+    php artisan db:seed  # Buat dummy data HR, Employee, Departments, Shifts, Schedules, Assignments
     ```
 
 6. **Run Server**:
@@ -287,6 +287,7 @@ Table schedule_assignments {
     -   `PUT /api/v1/schedules/{id}` - Update schedule
     -   `DELETE /api/v1/schedules/{id}` - Delete schedule
     -   `POST /api/v1/schedules/{id}/assign` - Assign employee to schedule
+    -   `GET /api/v1/schedules/{id}/assignments` - List assignments for a schedule
 
 -   **Employee**:
     -   `GET /api/v1/my-schedule` - Jadwal pribadi
