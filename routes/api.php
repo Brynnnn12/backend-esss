@@ -16,5 +16,7 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('departments', \App\Http\Controllers\DepartmentController::class);
 
         Route::apiResource('shifts', \App\Http\Controllers\ShiftController::class);
+
+        Route::apiResource('schedules', \App\Http\Controllers\ScheduleController::class);
     });
 });

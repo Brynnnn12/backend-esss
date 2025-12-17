@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ShiftResource extends JsonResource
+class ScheduleResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,9 +16,9 @@ class ShiftResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'start_time' => $this->start_time,
-            'end_time' => $this->end_time,
+            //ambil relasi department
+            'department' => new DepartmentResource($this->whenLoaded('department')),
+            'date' => $this->date,
         ];
     }
 }

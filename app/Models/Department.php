@@ -15,6 +15,11 @@ class Department extends Model
         'name',
     ];
 
+    public function schedules()
+    {
+        return $this->hasMany(Schedule::class);
+    }
+
 
     //scope untuk mencari department berdasarkan nama
     public function scopeSearchByName($query, $name)

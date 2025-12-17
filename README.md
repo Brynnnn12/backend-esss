@@ -186,7 +186,7 @@ Table schedule_assignments {
     -   Test Shift: Belum ada, akan ditambah.
     -   Jalankan: `php artisan test` – semua pass.
 
-### 🟧 Sprint 3 – Scheduling Core (5-6 Hari) 🔄 (Sedang Dikerjakan)
+### 🟧 Sprint 3 – Scheduling Core (5-6 Hari) ✅
 
 -   Buat model Schedule dan ScheduleAssignment.
 -   CRUD Schedule: Create schedule per date+dept, assign employee ke shift.
@@ -261,10 +261,14 @@ Table schedule_assignments {
     -   `GET /api/v1/shifts` - List all (akan ditambah)
     -   `POST /api/v1/shifts` - Create (akan ditambah)
 
--   **Schedules (HR Only, Belum Implementasi)**:
+-   **Schedules (HR Only)**:
 
+    -   `GET /api/v1/schedules` - List all schedules (paginated)
     -   `POST /api/v1/schedules` - Create schedule
-    -   `POST /api/v1/schedules/{id}/assign` - Assign employee
+    -   `GET /api/v1/schedules/{id}` - Show schedule detail
+    -   `PUT /api/v1/schedules/{id}` - Update schedule
+    -   `DELETE /api/v1/schedules/{id}` - Delete schedule
+    -   `POST /api/v1/schedules/{id}/assign` - Assign employee (akan ditambah)
 
 -   **Employee**:
     -   `GET /api/v1/my-schedule` - Jadwal pribadi (akan ditambah)
@@ -279,7 +283,7 @@ Table schedule_assignments {
     php artisan test  # Semua test
     php artisan test --filter=DepartmentTest  # Test spesifik
     ```
--   **Coverage**: Test auth, role, CRUD department.
+-   **Coverage**: Test auth, role, CRUD department, CRUD schedule.
 -   **Manual Test**: Gunakan Thunder Client dengan JSON collection untuk test API.
 
 ## 📊 Kenapa Project Ini Kuat untuk Fresh Grad D3 SI?
