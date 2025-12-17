@@ -12,7 +12,10 @@ use Illuminate\Http\JsonResponse;
 class DepartmentController extends Controller
 {
 
-    public function __construct(protected DepartmentService $departmentService) {}
+    public function __construct(protected DepartmentService $departmentService)
+    {
+        $this->authorizeResource(Department::class, 'departments');
+    }
 
     /**
      * Display a listing of the resource.

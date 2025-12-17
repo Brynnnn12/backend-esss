@@ -22,7 +22,7 @@ class UpdateDepartmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['sometimes', 'required', 'string', 'max:255', 'unique:departments,name,' . $this->route('department')->id],
+            'name' => ['sometimes', 'required', 'string', 'max:30', 'unique:departments,name,' . $this->route('department')->id],
         ];
     }
 
@@ -31,7 +31,7 @@ class UpdateDepartmentRequest extends FormRequest
         return [
             'name.required' => 'Nama departemen wajib diisi.',
             'name.string' => 'Nama departemen harus berupa teks.',
-            'name.max' => 'Nama departemen tidak boleh lebih dari 255 karakter.',
+            'name.max' => 'Nama departemen tidak boleh lebih dari 30 karakter.',
             'name.unique' => 'Nama departemen sudah ada.',
         ];
     }

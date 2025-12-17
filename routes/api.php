@@ -14,5 +14,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/me', [UserController::class, 'me']);
 
         Route::apiResource('departments', \App\Http\Controllers\DepartmentController::class);
+
+        Route::apiResource('shifts', \App\Http\Controllers\ShiftController::class);
     });
 });

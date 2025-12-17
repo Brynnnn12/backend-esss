@@ -34,5 +34,14 @@ class RoleAndPermissionSeeder extends Seeder
 
         //memberi role admin ke akun admin
         $admin->assignRole($adminRole);
+
+        $employee = User::create([
+            'name' => 'employee',
+            'email' => 'employee@gmail.com',
+            'password' => bcrypt('employee12345'),
+        ]);
+
+        //memberi role user ke akun user
+        $employee->assignRole($userRole);
     }
 }
