@@ -4,7 +4,7 @@ Sistem penjadwalan shift karyawan yang efisien, dengan validasi bentrok jadwal, 
 
 ## 📋 Deskripsi Proyek
 
-Proyek ini dibangun dengan Laravel untuk mengelola jadwal shift karyawan. Fokus utama adalah mencegah bentrok jadwal, kemudahan pengembangan, dan implementasi best practice backend.
+Proyek ini dibangun dengan Laravel 12 untuk mengelola jadwal shift karyawan. Fokus utama adalah mencegah bentrok jadwal, kemudahan pengembangan, dan implementasi best practice backend.
 
 ### 🎯 Fitur Utama
 
@@ -158,7 +158,7 @@ Table schedule_assignments {
 
 ### 🟩 Sprint 1 – Auth & Role (3 Hari) ✅
 
--   **Implementasi Auth**: Login/logout dengan Sanctum token.
+-   **Implementasi Auth**: Setup Laravel Breeze untuk login/logout/register dengan Sanctum token API.
 -   **Setup Role**: Gunakan Spatie Permission untuk role 'Hr' dan 'Employee'.
 -   **Permission Dasar**: HR bisa CRUD semua, Employee read-only jadwal sendiri.
 -   **Testing**: Buat test login dan role assignment.
@@ -204,10 +204,10 @@ Table schedule_assignments {
 
 ### Prerequisites
 
--   PHP 8.1+ (Laravel 11 requirement)
+-   PHP 8.2+ (Laravel 12 requirement)
 -   Composer
 -   MySQL/PostgreSQL
--   Node.js (jika ada frontend)
+-   Node.js & NPM (untuk Laravel Breeze frontend)
 -   Git
 
 ### Installation Steps
@@ -218,7 +218,7 @@ Table schedule_assignments {
     git clone <repo-url>
     cd backend-asset
     composer install
-    npm install  # Jika ada frontend
+    npm install
     ```
 
 2. **Environment Setup**:
@@ -226,17 +226,33 @@ Table schedule_assignments {
     ```bash
     cp .env.example .env
     php artisan key:generate
-    # Edit .env untuk DB connection
+    # Edit .env untuk DB connection dan mail (jika perlu)
     ```
 
-3. **Database**:
+3. **Install Laravel Breeze (jika belum)**:
+
+    ```bash
+    composer require laravel/breeze --dev
+    php artisan breeze:install api  # Untuk API-only auth
+    npm run build  # Build assets jika ada frontend
+    ```
+
+4. **Install Spatie Permission (untuk Role-Based Access)**:
+
+    ```bash
+    composer require spatie/laravel-permission
+    php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
+    php artisan migrate  # Tambah tabel permissions
+    ```
+
+5. **Database & Seeding**:
 
     ```bash
     php artisan migrate
     php artisan db:seed  # Buat dummy data HR, Employee, Departments, Shifts
     ```
 
-4. **Run Server**:
+6. **Run Server**:
     ```bash
     php artisan serve  # Akses di http://localhost:8000
     ```
@@ -245,8 +261,10 @@ Table schedule_assignments {
 
 -   **Auth**:
 
-    -   `POST /api/v1/login` - Login (return token)
-    -   `GET /api/v1/me` - Get current user
+    -   `POST /api/v1/login` - Login dengan email/password (return Sanctum token)
+    -   `POST /api/v1/register` - Register (jika diaktifkan)
+    -   `GET /api/v1/me` - Get current user info
+    -   `POST /api/v1/logout` - Logout (revoke token)
 
 -   **Departments (HR Only)**:
 
@@ -275,6 +293,13 @@ Table schedule_assignments {
 
 **Response Format**: Semua API return JSON standar dengan `success`, `message`, `data`.
 
+## 🔧 Troubleshooting
+
+-   **Error 403 Forbidden**: Pastikan user punya role yang benar (cek dengan `php artisan tinker` -> `User::first()->roles`).
+-   **Token Invalid**: Pastikan kirim header `Authorization: Bearer {token}` di setiap request.
+-   **Migration Fail**: Jalankan `php artisan migrate:fresh` untuk reset DB.
+-   **Test Fail**: Pastikan DB seeded dengan `php artisan db:seed`.
+
 ## 🧪 Testing
 
 -   **Framework**: Pest (lebih readable dari PHPUnit).
@@ -282,9 +307,10 @@ Table schedule_assignments {
     ```bash
     php artisan test  # Semua test
     php artisan test --filter=DepartmentTest  # Test spesifik
+    php artisan test --filter=ScheduleTest  # Test Schedule CRUD
     ```
--   **Coverage**: Test auth, role, CRUD department, CRUD schedule.
--   **Manual Test**: Gunakan Thunder Client dengan JSON collection untuk test API.
+-   **Coverage**: Test auth dengan Sanctum, role-based access, CRUD department & schedule.
+-   **Manual Test**: Gunakan Thunder Client atau Postman dengan JSON collection untuk test API. Pastikan kirim `Authorization: Bearer {token}` di header.
 
 ## 📊 Kenapa Project Ini Kuat untuk Fresh Grad D3 SI?
 
@@ -304,7 +330,7 @@ Table schedule_assignments {
 -   Developed RESTful API with standardized responses and comprehensive testing.
 -   Ensured data integrity with unique constraints and backend validations.
 
-**Tech Stack**: Laravel 11, MySQL, Pest, Sanctum.
+**Tech Stack**: Laravel 12, Laravel Breeze, Laravel Sanctum, Spatie Permission, MySQL, Pest.
 
 **Level**: Junior Backend Developer.
 
