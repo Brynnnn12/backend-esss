@@ -71,30 +71,34 @@ Table schedule_assignments {
 
 ### 👤 Role & Akses
 
--   **Admin/HR**: 
-    - Akses penuh ke semua fitur: buat/edit/hapus department, shift, schedule, assign karyawan.
-    - Lihat semua data jadwal.
--   **Employee**: 
-    - Hanya bisa lihat jadwal shift pribadi.
-    - Tidak bisa akses master data (department, shift).
+-   **Admin/HR**:
+    -   Akses penuh ke semua fitur: buat/edit/hapus department, shift, schedule, assign karyawan.
+    -   Lihat semua data jadwal.
+-   **Employee**:
+    -   Hanya bisa lihat jadwal shift pribadi.
+    -   Tidak bisa akses master data (department, shift).
 
 ### 🔄 Alur Utama
 
 1. **Setup Master Data (HR)**:
+
     - Buat department (e.g., IT, HR, Finance).
     - Buat shift (e.g., Pagi 08:00-16:00, Siang 14:00-22:00).
 
 2. **Buat Jadwal (HR)**:
+
     - Pilih tanggal dan department.
     - Sistem buat schedule entry.
 
 3. **Assign Karyawan (HR)**:
+
     - Pilih employee dari department tersebut.
     - Assign ke shift dengan validasi:
         - Tidak bentrok jam shift.
         - Tidak assign 2 shift di tanggal sama.
 
 4. **Validasi Sistem**:
+
     - Backend cegah duplikasi assignment per user per date.
     - Jika bentrok, return error 422.
 
@@ -109,15 +113,17 @@ Table schedule_assignments {
 ### ✅ Validasi Bentrok Shift
 
 -   **Rule 1**: Satu karyawan tidak boleh assign 2 shift di tanggal yang sama.
-    - Query: `SELECT * FROM schedule_assignments WHERE user_id = ? AND schedule_id IN (SELECT id FROM schedules WHERE date = ?)`
-    - Jika ada, tolak dengan error "Employee already assigned on this date".
+
+    -   Query: `SELECT * FROM schedule_assignments WHERE user_id = ? AND schedule_id IN (SELECT id FROM schedules WHERE date = ?)`
+    -   Jika ada, tolak dengan error "Employee already assigned on this date".
 
 -   **Rule 2**: Jam shift tidak bentrok (opsional, tergantung bisnis).
-    - Jika shift A end_time > shift B start_time, tolak.
+    -   Jika shift A end_time > shift B start_time, tolak.
 
 ### ✅ Query Penting
 
--   **Jadwal per karyawan**: 
+-   **Jadwal per karyawan**:
+
     ```sql
     SELECT sa.*, s.date, sh.name as shift_name, d.name as department_name
     FROM schedule_assignments sa
@@ -128,7 +134,8 @@ Table schedule_assignments {
     ORDER BY s.date DESC
     ```
 
--   **Jadwal per departemen**: 
+-   **Jadwal per departemen**:
+
     ```sql
     SELECT sa.*, u.name as employee_name, sh.name as shift_name
     FROM schedule_assignments sa
@@ -159,23 +166,25 @@ Table schedule_assignments {
 ### 🟨 Sprint 2 – Master Data (4 Hari) ✅
 
 -   **Department CRUD**:
-    - Model: `Department` dengan fillable name.
-    - Policy: `DepartmentPolicy` – HR bisa viewAny/create/update/delete, Employee tidak.
-    - Controller: `DepartmentController` dengan authorize di setiap method.
-    - Routes: `Route::apiResource('departments', DepartmentController::class)` di middleware auth:sanctum.
-    - Factory: `DepartmentFactory` untuk seeding dummy data.
-    - Seeder: `DepartmentSeeder` buat 3 department.
+
+    -   Model: `Department` dengan fillable name.
+    -   Policy: `DepartmentPolicy` – HR bisa viewAny/create/update/delete, Employee tidak.
+    -   Controller: `DepartmentController` dengan authorize di setiap method.
+    -   Routes: `Route::apiResource('departments', DepartmentController::class)` di middleware auth:sanctum.
+    -   Factory: `DepartmentFactory` untuk seeding dummy data.
+    -   Seeder: `DepartmentSeeder` buat 3 department.
 
 -   **Shift CRUD**:
-    - Model: `Shift` dengan UUID id, unique name.
-    - Factory: `ShiftFactory` dengan faker unique word untuk name, time untuk start/end.
-    - Seeder: `ShiftSeeder` buat 10 shift dummy.
-    - Policy & Controller: Belum diimplementasi (akan di Sprint 3).
+
+    -   Model: `Shift` dengan UUID id, unique name.
+    -   Factory: `ShiftFactory` dengan faker unique word untuk name, time untuk start/end.
+    -   Seeder: `ShiftSeeder` buat 10 shift dummy.
+    -   Policy & Controller: Belum diimplementasi (akan di Sprint 3).
 
 -   **Testing dengan Pest**:
-    - Test Department: HR bisa get list (200), Employee 403.
-    - Test Shift: Belum ada, akan ditambah.
-    - Jalankan: `php artisan test` – semua pass.
+    -   Test Department: HR bisa get list (200), Employee 403.
+    -   Test Shift: Belum ada, akan ditambah.
+    -   Jalankan: `php artisan test` – semua pass.
 
 ### 🟧 Sprint 3 – Scheduling Core (5-6 Hari) 🔄 (Sedang Dikerjakan)
 
@@ -204,6 +213,7 @@ Table schedule_assignments {
 ### Installation Steps
 
 1. **Clone & Install**:
+
     ```bash
     git clone <repo-url>
     cd backend-asset
@@ -212,6 +222,7 @@ Table schedule_assignments {
     ```
 
 2. **Environment Setup**:
+
     ```bash
     cp .env.example .env
     php artisan key:generate
@@ -219,6 +230,7 @@ Table schedule_assignments {
     ```
 
 3. **Database**:
+
     ```bash
     php artisan migrate
     php artisan db:seed  # Buat dummy data HR, Employee, Departments, Shifts
@@ -232,26 +244,30 @@ Table schedule_assignments {
 ### API Endpoints Utama
 
 -   **Auth**:
-    - `POST /api/v1/login` - Login (return token)
-    - `GET /api/v1/me` - Get current user
+
+    -   `POST /api/v1/login` - Login (return token)
+    -   `GET /api/v1/me` - Get current user
 
 -   **Departments (HR Only)**:
-    - `GET /api/v1/departments` - List all
-    - `POST /api/v1/departments` - Create
-    - `GET /api/v1/departments/{id}` - Show
-    - `PUT /api/v1/departments/{id}` - Update
-    - `DELETE /api/v1/departments/{id}` - Delete
+
+    -   `GET /api/v1/departments` - List all
+    -   `POST /api/v1/departments` - Create
+    -   `GET /api/v1/departments/{id}` - Show
+    -   `PUT /api/v1/departments/{id}` - Update
+    -   `DELETE /api/v1/departments/{id}` - Delete
 
 -   **Shifts (HR Only, Belum Implementasi Penuh)**:
-    - `GET /api/v1/shifts` - List all (akan ditambah)
-    - `POST /api/v1/shifts` - Create (akan ditambah)
+
+    -   `GET /api/v1/shifts` - List all (akan ditambah)
+    -   `POST /api/v1/shifts` - Create (akan ditambah)
 
 -   **Schedules (HR Only, Belum Implementasi)**:
-    - `POST /api/v1/schedules` - Create schedule
-    - `POST /api/v1/schedules/{id}/assign` - Assign employee
+
+    -   `POST /api/v1/schedules` - Create schedule
+    -   `POST /api/v1/schedules/{id}/assign` - Assign employee
 
 -   **Employee**:
-    - `GET /api/v1/my-schedule` - Jadwal pribadi (akan ditambah)
+    -   `GET /api/v1/my-schedule` - Jadwal pribadi (akan ditambah)
 
 **Response Format**: Semua API return JSON standar dengan `success`, `message`, `data`.
 
