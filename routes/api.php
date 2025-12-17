@@ -18,5 +18,7 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('shifts', \App\Http\Controllers\ShiftController::class);
 
         Route::apiResource('schedules', \App\Http\Controllers\ScheduleController::class);
+        Route::post('schedules/{schedule}/assign', [\App\Http\Controllers\ScheduleController::class, 'assign']);
+        Route::get('my-schedule', [\App\Http\Controllers\ScheduleController::class, 'mySchedule']);
     });
 });

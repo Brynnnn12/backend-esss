@@ -143,3 +143,99 @@ test('Employee tidak dapat menghapus schedule', function () {
     //Assert
     $response->assertStatus(403);
 });
+
+test('Hr dapat assign employee ke schedule', function () {
+    //Arrange
+    \App\Models\User::factory()->create()->assignRole('Hr');
+    $schedule = \App\Models\Schedule::factory()->create();
+    $user = \App\Models\User::factory()->create();
+    $shift = \App\Models\Shift::factory()->create();
+
+    $data = [
+        'user_id' => $user->id,
+        'shift_id' => $shift->id,
+    ];
+
+    //Act
+    $response = $this->actingAs(\App\Models\User::first())->postJson("/api/v1/schedules/{$schedule->id}/assign", $data);
+
+    //Assert
+    $response->assertStatus(201);
+    $response->assertJson([
+        'success' => true,
+        'message' => 'Employee assigned to schedule successfully',
+    ]);
+
+    $this->assertDatabaseHas('schedule_assignments', [
+        'schedule_id' => $schedule->id,
+        'user_id' => $user->id,
+        'shift_id' => $shift->id,
+    ]);
+});
+
+test('Employee tidak dapat assign employee ke schedule', function () {
+    //Arrange
+    \App\Models\User::factory()->create()->assignRole('Employee');
+    $schedule = \App\Models\Schedule::factory()->create();
+    $user = \App\Models\User::factory()->create();
+    $shift = \App\Models\Shift::factory()->create();
+
+    $data = [
+        'user_id' => $user->id,
+        'shift_id' => $shift->id,
+    ];
+
+    //Act
+    $response = $this->actingAs(\App\Models\User::first())->postJson("/api/v1/schedules/{$schedule->id}/assign", $data);
+
+    //Assert
+    $response->assertStatus(403);
+});
+
+test('Tidak dapat assign user yang sama ke schedule yang sama', function () {
+    //Arrange
+    \App\Models\User::factory()->create()->assignRole('Hr');
+    $schedule = \App\Models\Schedule::factory()->create();
+    $user = \App\Models\User::factory()->create();
+    $shift = \App\Models\Shift::factory()->create();
+
+    // Assign pertama
+    \App\Models\ScheduleAssignment::create([
+        'schedule_id' => $schedule->id,
+        'user_id' => $user->id,
+        'shift_id' => $shift->id,
+    ]);
+
+    // Coba assign lagi
+    $data = [
+        'user_id' => $user->id,
+        'shift_id' => $shift->id,
+    ];
+
+    //Act
+    $response = $this->actingAs(\App\Models\User::first())->postJson("/api/v1/schedules/{$schedule->id}/assign", $data);
+
+    //Assert
+    $response->assertStatus(422);
+    $response->assertJsonValidationErrors(['user_id']);
+});
+
+test('Employee dapat melihat jadwal pribadi', function () {
+    //Arrange
+    $user = \App\Models\User::factory()->create()->assignRole('Employee');
+    $schedule = \App\Models\Schedule::factory()->create();
+    $shift = \App\Models\Shift::factory()->create();
+
+    \App\Models\ScheduleAssignment::create([
+        'schedule_id' => $schedule->id,
+        'user_id' => $user->id,
+        'shift_id' => $shift->id,
+    ]);
+
+    //Act
+    $response = $this->actingAs($user)->getJson('/api/v1/my-schedule');
+
+    //Assert
+    $response->assertStatus(200);
+    $response->assertJsonCount(1, 'data');
+});

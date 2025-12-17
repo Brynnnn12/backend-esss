@@ -40,5 +40,8 @@ class Shift extends Model
         return $query->where('end_time', '>', $time);
     }
 
-    //relasi jika diperlukan
+    public function scheduleAssignments()
+    {
+        return $this->hasMany(ScheduleAssignment::class);
+    }
 }

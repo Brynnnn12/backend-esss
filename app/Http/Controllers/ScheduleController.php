@@ -3,15 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\Schedule;
-use App\Http\Requests\Schedule\StoreScheduleRequest;
-use App\Http\Requests\Schedule\UpdateScheduleRequest;
-use App\Http\Resources\ScheduleResource;
 use App\Services\ScheduleService;
+use App\Http\Resources\ScheduleResource;
+use App\Services\ScheduleAssignmentService;
+use App\Http\Resources\ScheduleAssignmentResource;
+use App\Http\Requests\Schedule\StoreScheduleRequest;
+use App\Http\Requests\Schedule\AssignScheduleRequest;
+use App\Http\Requests\Schedule\UpdateScheduleRequest;
+use Illuminate\Support\Facades\Auth;
 
 class ScheduleController extends Controller
 {
 
-    public function __construct(protected ScheduleService $scheduleService)
+    public function __construct(protected ScheduleService $scheduleService, protected ScheduleAssignmentService $assignmentService)
     {
         $this->authorizeResource(Schedule::class, 'schedule');
     }
@@ -73,5 +77,25 @@ class ScheduleController extends Controller
     {
         $this->scheduleService->deleteSchedule($schedule);
         return $this->successResponse(null, 'Schedule deleted successfully', 200);
+    }
+
+    /**
+     * Assign employee to schedule.
+     */
+    public function assign(AssignScheduleRequest $request, Schedule $schedule)
+    {
+        $this->authorize('create', \App\Models\ScheduleAssignment::class); // Explicit authorize
+        $data = array_merge($request->validated(), ['schedule_id' => $schedule->id]);
+        $assignment = $this->assignmentService->assignEmployee($data);
+        return $this->successResponse(new ScheduleAssignmentResource($assignment->load(['schedule.department', 'user', 'shift'])), 'Employee assigned to schedule successfully', 201);
+    }
+
+    /**
+     * Get current user's schedule assignments.
+     */
+    public function mySchedule()
+    {
+        $assignments = $this->assignmentService->getAssignmentsByUser(Auth::id());
+        return $this->successResponse(ScheduleAssignmentResource::collection($assignments), 'My schedule retrieved successfully', 200);
     }
 }

@@ -50,4 +50,9 @@ class User extends Authenticatable
             get: fn() => $this->getRoleNames()->first(),
         );
     }
+
+    public function scheduleAssignments()
+    {
+        return $this->hasMany(ScheduleAssignment::class);
+    }
 }

@@ -286,10 +286,10 @@ Table schedule_assignments {
     -   `GET /api/v1/schedules/{id}` - Show schedule detail
     -   `PUT /api/v1/schedules/{id}` - Update schedule
     -   `DELETE /api/v1/schedules/{id}` - Delete schedule
-    -   `POST /api/v1/schedules/{id}/assign` - Assign employee (akan ditambah)
+    -   `POST /api/v1/schedules/{id}/assign` - Assign employee to schedule
 
 -   **Employee**:
-    -   `GET /api/v1/my-schedule` - Jadwal pribadi (akan ditambah)
+    -   `GET /api/v1/my-schedule` - Jadwal pribadi
 
 **Response Format**: Semua API return JSON standar dengan `success`, `message`, `data`.
 

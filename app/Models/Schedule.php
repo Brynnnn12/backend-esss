@@ -26,6 +26,11 @@ class Schedule extends Model
         return $this->belongsTo(Department::class);
     }
 
+    public function assignments()
+    {
+        return $this->hasMany(ScheduleAssignment::class);
+    }
+
     // Scope untuk memuat relasi department
     public function scopeWithDepartment($query)
     {
