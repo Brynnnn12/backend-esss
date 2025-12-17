@@ -15,8 +15,17 @@ use Illuminate\Validation\ValidationException;
 class NewPasswordController extends Controller
 {
     /**
-     * Handle an incoming new password request.
+     * Mereset kata sandi dengan token.
      *
+     * @group Otentikasi
+     * @bodyParam token string required Token reset dari email. Contoh: abc123
+     * @bodyParam email string required Email pengguna. Contoh: john@example.com
+     * @bodyParam password string required Kata sandi baru. Contoh: newpassword123
+     * @bodyParam password_confirmation string required Konfirmasi kata sandi baru. Contoh: newpassword123
+     * @response 200 {
+     *   "success": true,
+     *   "message": "Password reset successfully"
+     * }
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request): JsonResponse

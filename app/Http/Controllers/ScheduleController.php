@@ -14,13 +14,32 @@ use Illuminate\Support\Facades\Auth;
 
 class ScheduleController extends Controller
 {
-
+    /**
+     * @group Jadwal
+     */
     public function __construct(protected ScheduleService $scheduleService, protected ScheduleAssignmentService $assignmentService)
     {
         $this->authorizeResource(Schedule::class, 'schedule');
     }
+
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar jadwal.
+     *
+     * @response 200 {
+     *   "success": true,
+     *   "message": "Schedules retrieved successfully",
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "department_id": 1,
+     *       "date": "2023-12-01",
+     *       "department": {
+     *         "id": 1,
+     *         "name": "IT"
+     *       }
+     *     }
+     *   ]
+     * }
      */
     public function index()
     {
@@ -37,7 +56,23 @@ class ScheduleController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Membuat jadwal baru.
+     *
+     * @bodyParam department_id integer required ID departemen. Contoh: 1
+     * @bodyParam date string required Tanggal jadwal (Y-m-d). Contoh: 2023-12-01
+     * @response 201 {
+     *   "success": true,
+     *   "message": "Schedule created successfully",
+     *   "data": {
+     *     "id": 1,
+     *     "department_id": 1,
+     *     "date": "2023-12-01",
+     *     "department": {
+     *       "id": 1,
+     *       "name": "IT"
+     *     }
+     *   }
+     * }
      */
     public function store(StoreScheduleRequest $request)
     {
@@ -46,7 +81,22 @@ class ScheduleController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Menampilkan detail jadwal.
+     *
+     * @urlParam schedule integer required ID jadwal.
+     * @response 200 {
+     *   "success": true,
+     *   "message": "Schedule retrieved successfully",
+     *   "data": {
+     *     "id": 1,
+     *     "department_id": 1,
+     *     "date": "2023-12-01",
+     *     "department": {
+     *       "id": 1,
+     *       "name": "IT"
+     *     }
+     *   }
+     * }
      */
     public function show(Schedule $schedule)
     {
@@ -62,7 +112,24 @@ class ScheduleController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Memperbarui jadwal.
+     *
+     * @urlParam schedule integer required ID jadwal.
+     * @bodyParam department_id integer ID departemen baru. Contoh: 2
+     * @bodyParam date string Tanggal jadwal baru (Y-m-d). Contoh: 2023-12-02
+     * @response 200 {
+     *   "success": true,
+     *   "message": "Schedule updated successfully",
+     *   "data": {
+     *     "id": 1,
+     *     "department_id": 2,
+     *     "date": "2023-12-02",
+     *     "department": {
+     *       "id": 2,
+     *       "name": "HR"
+     *     }
+     *   }
+     * }
      */
     public function update(UpdateScheduleRequest $request, Schedule $schedule)
     {
@@ -71,7 +138,13 @@ class ScheduleController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Menghapus jadwal.
+     *
+     * @urlParam schedule integer required ID jadwal.
+     * @response 200 {
+     *   "success": true,
+     *   "message": "Schedule deleted successfully"
+     * }
      */
     public function destroy(Schedule $schedule)
     {
@@ -80,7 +153,21 @@ class ScheduleController extends Controller
     }
 
     /**
-     * Assign employee to schedule.
+     * Menugaskan karyawan ke jadwal.
+     *
+     * @urlParam schedule integer required ID jadwal.
+     * @bodyParam user_id integer required ID karyawan. Contoh: 1
+     * @bodyParam shift_id string required ID shift (UUID). Contoh: uuid-shift
+     * @response 201 {
+     *   "success": true,
+     *   "message": "Employee assigned to schedule successfully",
+     *   "data": {
+     *     "id": 1,
+     *     "schedule_id": 1,
+     *     "user_id": 1,
+     *     "shift_id": "uuid-shift"
+     *   }
+     * }
      */
     public function assign(AssignScheduleRequest $request, Schedule $schedule)
     {
@@ -91,15 +178,56 @@ class ScheduleController extends Controller
     }
 
     /**
-     * Get current user's schedule assignments.
+     * Menampilkan jadwal pribadi karyawan.
+     *
+     * @response 200 {
+     *   "success": true,
+     *   "message": "My schedule retrieved successfully",
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "schedule_id": 1,
+     *       "user_id": 1,
+     *       "shift_id": "uuid-shift",
+     *       "date": "2023-12-01",
+     *       "shift": {
+     *         "id": "uuid-shift",
+     *         "name": "Morning Shift"
+     *       }
+     *     }
+     *   ]
+     * }
      */
     public function mySchedule()
     {
         $assignments = $this->assignmentService->getAssignmentsByUser(Auth::id());
         return $this->successResponse(ScheduleAssignmentResource::collection($assignments), 'My schedule retrieved successfully', 200);
     }
+
     /**
-     * Get assignments for a specific schedule (HR only).
+     * Menampilkan daftar penugasan untuk jadwal tertentu.
+     *
+     * @urlParam schedule integer required ID jadwal.
+     * @response 200 {
+     *   "success": true,
+     *   "message": "Schedule assignments retrieved successfully",
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "schedule_id": 1,
+     *       "user_id": 1,
+     *       "shift_id": "uuid-shift",
+     *       "user": {
+     *         "id": 1,
+     *         "name": "John Doe"
+     *       },
+     *       "shift": {
+     *         "id": "uuid-shift",
+     *         "name": "Morning Shift"
+     *       }
+     *     }
+     *   ]
+     * }
      */
     public function assignments(Schedule $schedule)
     {

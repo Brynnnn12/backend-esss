@@ -7,12 +7,28 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 
+
 class UserController extends Controller
 {
-    use ApiResponse;
 
     /**
-     * Get the authenticated user's profile.
+     * Mendapatkan profil pengguna yang sedang login.
+     *
+     * @group Otentikasi
+     * @response 200 {
+     *   "success": true,
+     *   "message": "User Berhasil Diambil",
+     *   "data": {
+     *     "id": 1,
+     *     "name": "John Doe",
+     *     "email": "john@example.com",
+     *     "roles": [
+     *       {
+     *         "name": "Employee"
+     *       }
+     *     ]
+     *   }
+     * }
      */
     public function me(Request $request): \Illuminate\Http\JsonResponse
     {

@@ -10,14 +10,29 @@ use App\Http\Resources\ShiftResource;
 
 class ShiftController extends Controller
 {
-
+    /**
+     * @group Shift
+     */
     public function __construct(protected ShiftService $shiftService)
     {
         $this->authorizeResource(Shift::class, 'shift');
     }
 
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar shift.
+     *
+     * @response 200 {
+     *   "success": true,
+     *   "message": "Shifts retrieved successfully",
+     *   "data": [
+     *     {
+     *       "id": "uuid",
+     *       "name": "Morning Shift",
+     *       "start_time": "08:00",
+     *       "end_time": "16:00"
+     *     }
+     *   ]
+     * }
      */
     public function index()
     {
@@ -34,7 +49,21 @@ class ShiftController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Membuat shift baru.
+     *
+     * @bodyParam name string required Nama shift. Contoh: Morning Shift
+     * @bodyParam start_time string required Waktu mulai (HH:MM). Contoh: 08:00
+     * @bodyParam end_time string required Waktu berakhir (HH:MM). Contoh: 16:00
+     * @response 201 {
+     *   "success": true,
+     *   "message": "Shift created successfully",
+     *   "data": {
+     *     "id": "uuid",
+     *     "name": "Morning Shift",
+     *     "start_time": "08:00",
+     *     "end_time": "16:00"
+     *   }
+     * }
      */
     public function store(StoreShiftRequest $request)
     {
@@ -43,7 +72,19 @@ class ShiftController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Menampilkan detail shift.
+     *
+     * @urlParam shift string required ID shift (UUID).
+     * @response 200 {
+     *   "success": true,
+     *   "message": "Shift retrieved successfully",
+     *   "data": {
+     *     "id": "uuid",
+     *     "name": "Morning Shift",
+     *     "start_time": "08:00",
+     *     "end_time": "16:00"
+     *   }
+     * }
      */
     public function show(Shift $shift)
     {
@@ -59,7 +100,22 @@ class ShiftController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Memperbarui shift.
+     *
+     * @urlParam shift string required ID shift (UUID).
+     * @bodyParam name string Nama shift baru. Contoh: Afternoon Shift
+     * @bodyParam start_time string Waktu mulai baru (HH:MM). Contoh: 14:00
+     * @bodyParam end_time string Waktu berakhir baru (HH:MM). Contoh: 22:00
+     * @response 200 {
+     *   "success": true,
+     *   "message": "Shift updated successfully",
+     *   "data": {
+     *     "id": "uuid",
+     *     "name": "Afternoon Shift",
+     *     "start_time": "14:00",
+     *     "end_time": "22:00"
+     *   }
+     * }
      */
     public function update(UpdateShiftRequest $request, Shift $shift)
     {
@@ -68,7 +124,13 @@ class ShiftController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Menghapus shift.
+     *
+     * @urlParam shift string required ID shift (UUID).
+     * @response 200 {
+     *   "success": true,
+     *   "message": "Shift deleted successfully"
+     * }
      */
     public function destroy(Shift $shift)
     {

@@ -11,8 +11,14 @@ use Illuminate\Validation\ValidationException;
 class PasswordResetLinkController extends Controller
 {
     /**
-     * Handle an incoming password reset link request.
+     * Mengirim link reset kata sandi.
      *
+     * @group Otentikasi
+     * @bodyParam email string required Email pengguna. Contoh: john@example.com
+     * @response 200 {
+     *   "success": true,
+     *   "message": "Password reset link sent successfully"
+     * }
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request): JsonResponse

@@ -20,7 +20,7 @@ class SchedulePolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -28,7 +28,7 @@ class SchedulePolicy
      */
     public function view(User $user, Schedule $schedule): bool
     {
-        return false;
+        return true;
     }
 
     /**

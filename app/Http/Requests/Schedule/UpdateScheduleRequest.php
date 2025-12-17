@@ -21,10 +21,30 @@ class UpdateScheduleRequest extends FormRequest
      */
     public function rules(): array
     {
+        $schedule = $this->route('schedule');
+        $departmentId = $this->department_id ?? ($schedule ? $schedule->department_id : '');
+
         return [
             //pakai sometimes karena bisa saja user hanya mengupdate salah satu field saja
             'department_id' => ['sometimes', 'required', 'exists:departments,id'],
-            'date' => ['sometimes', 'required', 'date', 'unique:schedules,date,' . $this->route('schedule')->id . ',id,department_id,' . ($this->department_id ?? $this->route('schedule')->department_id)],
+            'date' => ['sometimes', 'required', 'date', 'unique:schedules,date,' . ($schedule ? $schedule->id : '') . ',id,department_id,' . $departmentId],
+        ];
+    }
+
+    /**
+     * Get the body parameters for API documentation.
+     */
+    public function bodyParameters(): array
+    {
+        return [
+            'department_id' => [
+                'description' => 'The ID of the department.',
+                'example' => 1,
+            ],
+            'date' => [
+                'description' => 'The date of the schedule in Y-m-d format.',
+                'example' => '2023-12-01',
+            ],
         ];
     }
 

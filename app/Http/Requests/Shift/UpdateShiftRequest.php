@@ -24,28 +24,57 @@ class UpdateShiftRequest extends FormRequest
     {
         $shift = $this->route('shift');
 
+        if ($shift) {
+            return [
+                'name' => [
+                    'sometimes',
+                    'required',
+                    'string',
+                    'max:30',
+                    // Cek Unik tapi abaikan (ignore) ID shift yang sedang diedit
+                    Rule::unique('shifts')->ignore($shift->id)->where(function ($query) use ($shift) {
+                        // Gunakan input user, jika kosong gunakan data lama dari DB
+                        // Note: substr($val, 0, 5) digunakan untuk memastikan format DB (08:00:00) 
+                        // terbaca sebagai (08:00) agar cocok dengan input user jika dibandingkan manual,
+                        // tapi untuk query SQL, MySQL biasanya otomatis handle '08:00' == '08:00:00'.
+
+                        $start = $this->input('start_time', $shift->start_time);
+                        $end   = $this->input('end_time', $shift->end_time);
+
+                        return $query->where('start_time', $start)
+                            ->where('end_time', $end);
+                    }),
+                ],
+                'start_time' => 'sometimes|required|date_format:H:i',
+                'end_time'   => 'sometimes|required|date_format:H:i|after:start_time',
+            ];
+        } else {
+            return [
+                'name' => 'sometimes|required|string|max:30|unique:shifts,name',
+                'start_time' => 'sometimes|required|date_format:H:i',
+                'end_time'   => 'sometimes|required|date_format:H:i|after:start_time',
+            ];
+        }
+    }
+
+    /**
+     * Get the body parameters for API documentation.
+     */
+    public function bodyParameters(): array
+    {
         return [
             'name' => [
-                'sometimes',
-                'required',
-                'string',
-                'max:30',
-                // Cek Unik tapi abaikan (ignore) ID shift yang sedang diedit
-                Rule::unique('shifts')->ignore($shift->id)->where(function ($query) use ($shift) {
-                    // Gunakan input user, jika kosong gunakan data lama dari DB
-                    // Note: substr($val, 0, 5) digunakan untuk memastikan format DB (08:00:00) 
-                    // terbaca sebagai (08:00) agar cocok dengan input user jika dibandingkan manual,
-                    // tapi untuk query SQL, MySQL biasanya otomatis handle '08:00' == '08:00:00'.
-
-                    $start = $this->input('start_time', $shift->start_time);
-                    $end   = $this->input('end_time', $shift->end_time);
-
-                    return $query->where('start_time', $start)
-                        ->where('end_time', $end);
-                }),
+                'description' => 'The name of the shift.',
+                'example' => 'Morning Shift',
             ],
-            'start_time' => 'sometimes|required|date_format:H:i',
-            'end_time'   => 'sometimes|required|date_format:H:i|after:start_time',
+            'start_time' => [
+                'description' => 'The start time of the shift in HH:MM format.',
+                'example' => '08:00',
+            ],
+            'end_time' => [
+                'description' => 'The end time of the shift in HH:MM format.',
+                'example' => '16:00',
+            ],
         ];
     }
 

@@ -22,15 +22,33 @@ class AssignScheduleRequest extends FormRequest
      */
     public function rules(): array
     {
-        $scheduleId = $this->route('schedule')->id;
+        $schedule = $this->route('schedule');
+        $scheduleId = $schedule ? $schedule->id : null;
 
         return [
             'user_id' => [
                 'required',
                 'exists:users,id',
-                Rule::unique('schedule_assignments', 'user_id')->where('schedule_id', $scheduleId), // Cegah assign user yang sama ke schedule ini
+                $scheduleId ? Rule::unique('schedule_assignments', 'user_id')->where('schedule_id', $scheduleId) : 'unique:schedule_assignments,user_id', // Cegah assign user yang sama ke schedule ini
             ],
             'shift_id' => ['required', 'exists:shifts,id'],
+        ];
+    }
+
+    /**
+     * Get the body parameters for API documentation.
+     */
+    public function bodyParameters(): array
+    {
+        return [
+            'user_id' => [
+                'description' => 'The ID of the user to assign.',
+                'example' => 1,
+            ],
+            'shift_id' => [
+                'description' => 'The ID of the shift to assign.',
+                'example' => 1,
+            ],
         ];
     }
 

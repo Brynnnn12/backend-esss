@@ -22,7 +22,20 @@ class UpdateDepartmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['sometimes', 'required', 'string', 'max:30', 'unique:departments,name,' . $this->route('department')->id],
+            'name' => ['sometimes', 'required', 'string', 'max:30', 'unique:departments,name,' . ($this->route('department')?->id ?? '')],
+        ];
+    }
+
+    /**
+     * Get the body parameters for API documentation.
+     */
+    public function bodyParameters(): array
+    {
+        return [
+            'name' => [
+                'description' => 'The name of the department.',
+                'example' => 'Human Resources',
+            ],
         ];
     }
 

@@ -14,8 +14,23 @@ use Illuminate\Validation\Rules;
 class RegisteredUserController extends Controller
 {
     /**
-     * Handle an incoming registration request.
+     * Mendaftarkan pengguna baru.
      *
+     * @group Otentikasi
+     * @unauthenticated
+     * @bodyParam name string required Nama pengguna. Contoh: John Doe
+     * @bodyParam email string required Email pengguna (harus unik). Contoh: john@example.com
+     * @bodyParam password string required Kata sandi (minimal 8 karakter). Contoh: password123
+     * @bodyParam password_confirmation string required Konfirmasi kata sandi. Contoh: password123
+     * @response 201 {
+     *   "success": true,
+     *   "message": "User registered successfully",
+     *   "data": {
+     *     "id": 1,
+     *     "name": "John Doe",
+     *     "email": "john@example.com"
+     *   }
+     * }
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request): \Illuminate\Http\JsonResponse

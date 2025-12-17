@@ -9,11 +9,29 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
+
 class AuthenticatedSessionController extends Controller
 {
 
     /**
-     * Handle an incoming authentication request.
+     * Masuk ke akun pengguna.
+     *
+     * @group Otentikasi
+     * @unauthenticated
+     * @bodyParam email string required Email pengguna. Contoh: john@example.com
+     * @bodyParam password string required Kata sandi. Contoh: password123
+     * @response 200 {
+     *   "success": true,
+     *   "message": "Login successful",
+     *   "data": {
+     *     "user": {
+     *       "id": 1,
+     *       "name": "John Doe",
+     *       "email": "john@example.com"
+     *     },
+     *     "token": "api_token_here"
+     *   }
+     * }
      */
     public function store(LoginRequest $request): \Illuminate\Http\JsonResponse
     {
@@ -28,7 +46,13 @@ class AuthenticatedSessionController extends Controller
     }
 
     /**
-     * Destroy an authenticated session.
+     * Keluar dari akun pengguna.
+     *
+     * @group Otentikasi
+     * @response 200 {
+     *   "success": true,
+     *   "message": "Logged out successfully"
+     * }
      */
     public function destroy(Request $request): \Illuminate\Http\JsonResponse
     {

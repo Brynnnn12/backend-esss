@@ -15,6 +15,7 @@ class DepartmentPolicy
      */
     public function before(User $user, $ability)
     {
+
         // Pastikan nama role sesuai dengan yang di database ('hr' atau 'Hr')
         if ($user->hasRole('Hr')) {
             return true;
@@ -31,7 +32,7 @@ class DepartmentPolicy
     {
         // HR sudah lolos di "before", jadi method ini hanya untuk user NON-HR
         // Misalnya: return true; (kalau user biasa boleh lihat list department)
-        return false;
+        return true;
     }
 
     /**
@@ -39,7 +40,7 @@ class DepartmentPolicy
      */
     public function view(User $user, Department $department): bool
     {
-        return false;
+        return true;
     }
 
     /**

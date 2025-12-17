@@ -4,7 +4,7 @@ Sistem penjadwalan shift karyawan yang efisien, dengan validasi bentrok jadwal, 
 
 ## 📋 Deskripsi Proyek
 
-Proyek ini dibangun dengan Laravel 12 untuk mengelola jadwal shift karyawan. Fokus utama adalah mencegah bentrok jadwal, kemudahan pengembangan, dan implementasi best practice backend.
+Proyek ini dibangun dengan Laravel 11 untuk mengelola jadwal shift karyawan. Fokus utama adalah mencegah bentrok jadwal, kemudahan pengembangan, dan implementasi best practice backend.
 
 ### 🎯 Fitur Utama
 
@@ -179,11 +179,12 @@ Table schedule_assignments {
     -   Model: `Shift` dengan UUID id, unique name.
     -   Factory: `ShiftFactory` dengan faker unique word untuk name, time untuk start/end.
     -   Seeder: `ShiftSeeder` buat 10 shift dummy.
-    -   Policy & Controller: Belum diimplementasi (akan di Sprint 3).
+    -   Policy & Controller: Sudah diimplementasi dengan validasi unik kombinasi name, start_time, end_time.
+    -   Testing: Sudah ditambahkan test CRUD Shift.
 
 -   **Testing dengan Pest**:
     -   Test Department: HR bisa get list (200), Employee 403.
-    -   Test Shift: Belum ada, akan ditambah.
+    -   Test Shift: HR bisa CRUD (200), Employee 403.
     -   Jalankan: `php artisan test` – semua pass.
 
 ### 🟧 Sprint 3 – Scheduling Core (5-6 Hari) ✅
@@ -274,10 +275,13 @@ Table schedule_assignments {
     -   `PUT /api/v1/departments/{id}` - Update
     -   `DELETE /api/v1/departments/{id}` - Delete
 
--   **Shifts (HR Only, Belum Implementasi Penuh)**:
+-   **Shifts (HR Only)**:
 
-    -   `GET /api/v1/shifts` - List all (akan ditambah)
-    -   `POST /api/v1/shifts` - Create (akan ditambah)
+    -   `GET /api/v1/shifts` - List all
+    -   `POST /api/v1/shifts` - Create
+    -   `GET /api/v1/shifts/{id}` - Show
+    -   `PUT /api/v1/shifts/{id}` - Update
+    -   `DELETE /api/v1/shifts/{id}` - Delete
 
 -   **Schedules (HR Only)**:
 
@@ -294,6 +298,12 @@ Table schedule_assignments {
 
 **Response Format**: Semua API return JSON standar dengan `success`, `message`, `data`.
 
+## 📖 Dokumentasi API
+
+Dokumentasi lengkap API tersedia di `http://localhost:8000/docs` setelah menjalankan server (`php artisan serve`). Dokumentasi menggunakan Scribe dengan bahasa Indonesia, termasuk contoh request/response, parameter, dan grup endpoint (Otentikasi, Departemen, Shift, Jadwal).
+
+Untuk generate ulang dokumentasi: `php artisan scribe:generate`.
+
 ## 🔧 Troubleshooting
 
 -   **Error 403 Forbidden**: Pastikan user punya role yang benar (cek dengan `php artisan tinker` -> `User::first()->roles`).
@@ -308,9 +318,10 @@ Table schedule_assignments {
     ```bash
     php artisan test  # Semua test
     php artisan test --filter=DepartmentTest  # Test spesifik
+    php artisan test --filter=ShiftTest  # Test Shift CRUD
     php artisan test --filter=ScheduleTest  # Test Schedule CRUD
     ```
--   **Coverage**: Test auth dengan Sanctum, role-based access, CRUD department & schedule.
+-   **Coverage**: Test auth dengan Sanctum, role-based access, CRUD department, shift & schedule.
 -   **Manual Test**: Gunakan Thunder Client atau Postman dengan JSON collection untuk test API. Pastikan kirim `Authorization: Bearer {token}` di header.
 
 ## 📊 Kenapa Project Ini Kuat untuk Fresh Grad D3 SI?

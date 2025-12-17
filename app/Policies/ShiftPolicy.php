@@ -23,7 +23,7 @@ class ShiftPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -31,7 +31,7 @@ class ShiftPolicy
      */
     public function view(User $user, Shift $shift): bool
     {
-        return false;
+        return true;
     }
 
     /**
